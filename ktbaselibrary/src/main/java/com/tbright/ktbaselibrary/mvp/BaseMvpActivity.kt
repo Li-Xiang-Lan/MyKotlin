@@ -1,0 +1,34 @@
+package com.tbright.ktbaselibrary.mvp
+
+import android.os.Bundle
+import com.tbright.ktbaselibrary.base.BaseActivity
+import com.tbright.ktbaselibrary.event.MessageEvent
+import com.tbright.ktbaselibrary.global.GlobalConfig
+import com.tbright.ktbaselibrary.utils.ReflectUtils
+
+abstract class BaseMvpActivity<P : IPresenter> : BaseActivity(), BaseView {
+
+    open var mPresenter: P? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        mPresenter = ReflectUtils.getObject(this, 0)
+        mPresenter?.onAttachView(this)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        mPresenter?.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun showLoading() {
+        GlobalConfig.showUIProxy?.showLoading()
+    }
+
+    override fun hideLoading() {
+        GlobalConfig.showUIProxy?.hideLoading()
+    }
+
+    override fun showError(errorMessage: String) {
+        GlobalConfig.showUIProxy?.showError(errorMessage)
+    }
+}
